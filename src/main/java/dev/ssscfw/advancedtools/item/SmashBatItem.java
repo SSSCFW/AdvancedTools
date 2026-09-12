@@ -1,9 +1,13 @@
 package dev.ssscfw.advancedtools.item;
 
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tiers;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.level.Level;
 
 public final class SmashBatItem extends SpecialSwordItem {
     public SmashBatItem() {
@@ -11,12 +15,14 @@ public final class SmashBatItem extends SpecialSwordItem {
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        Vec3 away = target.position().subtract(attacker.position());
-        if (away.lengthSqr() > 1.0E-6D) {
-            Vec3 push = new Vec3(away.x, 0.0D, away.z).normalize().scale(2.5D);
-            target.push(push.x, 0.35D, push.z);
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
+        super.inventoryTick(stack, level, entity, slot, selected);
+        if (level.isClientSide) {
+            return;
         }
-        return true;
+        var knockback = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.KNOCKBACK);
+        if (stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY).getLevel(knockback) < 10) {
+            stack.enchant(knockback, 10);
+        }
     }
 }
