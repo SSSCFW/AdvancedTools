@@ -1,5 +1,6 @@
 package dev.ssscfw.advancedtools.event;
 
+import dev.ssscfw.advancedtools.config.AdvancedToolsConfig;
 import dev.ssscfw.advancedtools.entity.FireZombieEntity;
 import dev.ssscfw.advancedtools.entity.GoldCreeperEntity;
 import dev.ssscfw.advancedtools.entity.HighSkeletonEntity;
@@ -14,8 +15,7 @@ import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 
 public final class ModEntityEvents {
-    private ModEntityEvents() {
-    }
+    private ModEntityEvents() {}
 
     public static void onAttributes(EntityAttributeCreationEvent event) {
         event.put(ModEntities.HIGH_SKELETON.get(), HighSkeletonEntity.createAttributes().build());
@@ -28,18 +28,28 @@ public final class ModEntityEvents {
 
     public static void onSpawnPlacements(RegisterSpawnPlacementsEvent event) {
         event.register(ModEntities.HIGH_SKELETON.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                (type, level, reason, pos, random) -> pos.getY() < 50 && Monster.checkMonsterSpawnRules(type, level, reason, pos, random),
+                (type, level, reason, pos, random) -> AdvancedToolsConfig.highSkeletonEnabled()
+                        && pos.getY() < 50 && Monster.checkMonsterSpawnRules(type, level, reason, pos, random),
                 RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(ModEntities.SKELETON_SNIPER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+                (type, level, reason, pos, random) -> AdvancedToolsConfig.skeletonSniperEnabled()
+                        && Monster.checkMonsterSpawnRules(type, level, reason, pos, random),
+                RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(ModEntities.ZOMBIE_WARRIOR.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                (type, level, reason, pos, random) -> pos.getY() < 50 && Monster.checkMonsterSpawnRules(type, level, reason, pos, random),
+                (type, level, reason, pos, random) -> AdvancedToolsConfig.zombieWarriorEnabled()
+                        && pos.getY() < 50 && Monster.checkMonsterSpawnRules(type, level, reason, pos, random),
                 RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(ModEntities.FIRE_ZOMBIE.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+                (type, level, reason, pos, random) -> AdvancedToolsConfig.fireZombieEnabled()
+                        && Monster.checkMonsterSpawnRules(type, level, reason, pos, random),
+                RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(ModEntities.HIGH_SPEED_CREEPER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+                (type, level, reason, pos, random) -> AdvancedToolsConfig.highSpeedCreeperEnabled()
+                        && Monster.checkMonsterSpawnRules(type, level, reason, pos, random),
+                RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(ModEntities.GOLD_CREEPER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+                (type, level, reason, pos, random) -> AdvancedToolsConfig.goldCreeperEnabled()
+                        && Monster.checkMonsterSpawnRules(type, level, reason, pos, random),
+                RegisterSpawnPlacementsEvent.Operation.REPLACE);
     }
 }
