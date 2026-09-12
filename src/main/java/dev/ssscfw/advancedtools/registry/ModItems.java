@@ -22,7 +22,6 @@ import dev.ssscfw.advancedtools.item.UpgradedShovelItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Tiers;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -77,7 +76,6 @@ public final class ModItems {
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ADVANCED_TOOLS_TAB = CREATIVE_TABS.register("advancedtools", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.advancedtools"))
-            .withTabsAfter(CreativeModeTabs.SPAWN_EGGS)
             .icon(() -> BLUE_ENHANCER.get().getDefaultInstance())
             .displayItems((parameters, output) -> ITEMS.getEntries().forEach(entry -> output.accept(entry.get())))
             .build());
