@@ -1,6 +1,7 @@
 package dev.ssscfw.advancedtools;
 
 import dev.ssscfw.advancedtools.event.CommonEvents;
+import dev.ssscfw.advancedtools.registry.ModEntities;
 import dev.ssscfw.advancedtools.registry.ModItems;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -14,6 +15,7 @@ public final class AdvancedTools {
     public AdvancedTools(IEventBus modBus, ModContainer modContainer) {
         ModItems.ITEMS.register(modBus);
         ModItems.CREATIVE_TABS.register(modBus);
+        ModEntities.ENTITY_TYPES.register(modBus);
         NeoForge.EVENT_BUS.addListener(CommonEvents::onLeftClickBlock);
     }
 }
