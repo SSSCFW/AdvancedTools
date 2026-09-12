@@ -1,10 +1,10 @@
 package dev.ssscfw.advancedtools.item;
 
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +26,7 @@ public final class HolySaberItem extends SpecialSwordItem {
 
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        float bonus = target instanceof EnderMan ? 10.0F : target.getMobType() == MobType.UNDEAD ? 7.0F : 0.0F;
+        float bonus = target instanceof EnderMan ? 10.0F : target.getType().is(EntityTypeTags.UNDEAD) ? 7.0F : 0.0F;
         AbilityUtil.extraDamage(target, attacker, bonus);
         return true;
     }

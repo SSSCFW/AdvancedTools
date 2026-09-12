@@ -19,14 +19,14 @@ public final class DevilSwordItem extends SpecialSwordItem {
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
         super.inventoryTick(stack, level, entity, slot, selected);
-        if (level.isClientSide || !(entity instanceof Player player) || player.getMainHandItem() != stack || player.hasEffect(MobEffects.STRENGTH)) {
+        if (level.isClientSide || !(entity instanceof Player player) || player.getMainHandItem() != stack || player.hasEffect(MobEffects.DAMAGE_BOOST)) {
             return;
         }
         if (player.getHealth() > 1.0F) {
             player.setHealth(Math.max(1.0F, player.getHealth() - 1.0F));
-            player.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 59, 1));
+            player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 59, 1));
         } else {
-            player.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 19, 1));
+            player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 19, 1));
         }
     }
 
