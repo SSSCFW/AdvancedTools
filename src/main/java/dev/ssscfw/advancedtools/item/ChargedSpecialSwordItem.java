@@ -3,6 +3,8 @@ package dev.ssscfw.advancedtools.item;
 import java.util.List;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -55,17 +57,26 @@ public abstract class ChargedSpecialSwordItem extends SpecialSwordItem {
             return;
         }
         float power = chargePower(usedTicks);
+        boolean fullyCharged = usedTicks >= 20;
         if (!level.isClientSide) {
-            performAbility(level, player, stack, power, usedTicks >= 20);
+            performAbility(level, player, stack, power, fullyCharged);
             InteractionHand hand = player.getMainHandItem() == stack ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
             stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
             if (!player.hasInfiniteMaterials() && hungerCost > 0) {
                 player.getFoodData().eat(-hungerCost, 0.0F);
             }
+            afterAbility(level, player, stack, power, fullyCharged);
+            player.swing(hand, true);
+            level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                    SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F,
+                    1.0F / (level.random.nextFloat() * 0.4F + 1.2F) + 0.5F);
         }
     }
 
     protected abstract void performAbility(Level level, Player player, ItemStack stack, float power, boolean fullyCharged);
+
+    protected void afterAbility(Level level, Player player, ItemStack stack, float power, boolean fullyCharged) {
+    }
 
     protected static float chargePower(int ticks) {
         float value = ticks / 20.0F;
