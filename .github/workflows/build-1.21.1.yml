@@ -9,6 +9,9 @@ on:
         default: false
         type: boolean
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -61,8 +64,44 @@ jobs:
           cat "$log"
           echo "Dedicated server did not reach the ready state within 90 seconds."
           exit 1
-      - uses: actions/upload-artifact@v4
+      - name: Prepare direct JAR
         if: success()
-        with:
-          name: AdvancedTools-1.21.1
-          path: build/libs/*.jar
+        shell: bash
+        run: |
+          set -euo pipefail
+          jar_path="$(find build/libs -maxdepth 1 -type f -name '*.jar' ! -name '*-sources.jar' ! -name '*-javadoc.jar' | head -n 1)"
+          if [ -z "$jar_path" ]; then
+            echo "Built JAR was not found."
+            exit 1
+          fi
+          cp "$jar_path" AdvancedTools-1.21.1.jar
+      - name: Publish direct JAR download
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          notes="$(printf 'Branch: `%s`\nCommit: `%s`\nRun: %s/%s/actions/runs/%s\n' \
+            "$GITHUB_REF_NAME" "$GITHUB_SHA" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID")"
+
+          if gh release view ci-latest >/dev/null 2>&1; then
+            gh release edit ci-latest \
+              --target "$GITHUB_SHA" \
+              --title "Latest CI build" \
+              --notes "$notes" \
+              --prerelease \
+              --latest=false
+            gh release upload ci-latest AdvancedTools-1.21.1.jar --clobber
+          else
+            gh release create ci-latest AdvancedTools-1.21.1.jar \
+              --target "$GITHUB_SHA" \
+              --title "Latest CI build" \
+              --notes "$notes" \
+              --prerelease \
+              --latest=false
+          fi
+
+          direct_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/ci-latest/AdvancedTools-1.21.1.jar"
+          echo "### Direct JAR download" >> "$GITHUB_STEP_SUMMARY"
+          echo "[Download AdvancedTools-1.21.1.jar]($direct_url)" >> "$GITHUB_STEP_SUMMARY"
