@@ -46,6 +46,13 @@ public class UpgradedAxeItem extends AxeItem implements AreaMiningItem {
     }
 
     @Override
+    public void postHurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        if (!infinite) {
+            super.postHurtEnemy(stack, target, attacker);
+        }
+    }
+
+    @Override
     public InteractionResult useOn(UseOnContext context) {
         if (!infinite) {
             return super.useOn(context);
