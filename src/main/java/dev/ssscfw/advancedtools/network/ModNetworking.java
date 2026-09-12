@@ -7,9 +7,14 @@ public final class ModNetworking {
     }
 
     public static void register(RegisterPayloadHandlersEvent event) {
-        event.registrar("1").playToServer(
-                ToggleMagnetPayload.TYPE,
-                ToggleMagnetPayload.STREAM_CODEC,
-                ToggleMagnetPayload::handle);
+        event.registrar("1")
+                .playToServer(
+                        ToggleMagnetPayload.TYPE,
+                        ToggleMagnetPayload.STREAM_CODEC,
+                        ToggleMagnetPayload::handle)
+                .playToServer(
+                        ToggleSolidifierPayload.TYPE,
+                        ToggleSolidifierPayload.STREAM_CODEC,
+                        ToggleSolidifierPayload::handle);
     }
 }
