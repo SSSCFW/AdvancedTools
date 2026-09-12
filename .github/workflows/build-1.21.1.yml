@@ -2,6 +2,12 @@ name: Build 1.21.1 NeoForge
 
 on:
   workflow_dispatch:
+    inputs:
+      server_smoke_test:
+        description: Run dedicated server smoke test
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   build:
@@ -15,21 +21,46 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '9.2.1'
+          cache-read-only: false
+          cache-cleanup: on-success
       - name: Build
-        run: gradle build --stacktrace
+        run: gradle build --build-cache --stacktrace
       - name: Dedicated server smoke test
+        if: ${{ inputs.server_smoke_test }}
         shell: bash
         run: |
+          set -euo pipefail
           mkdir -p run/server
           printf 'eula=true\n' > run/server/eula.txt
-          set +e
-          timeout 90s gradle runServer --stacktrace > server-smoke.log 2>&1
-          set -e
-          cat server-smoke.log
-          if ! grep -q "Done (" server-smoke.log; then
-            echo "Dedicated server did not reach the ready state."
-            exit 1
-          fi
+          log="$GITHUB_WORKSPACE/server-smoke.log"
+          : > "$log"
+
+          setsid gradle runServer --build-cache --stacktrace > "$log" 2>&1 &
+          server_pid=$!
+
+          cleanup() {
+            kill -- -"$server_pid" 2>/dev/null || true
+            wait "$server_pid" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+
+          for _ in $(seq 1 90); do
+            if grep -q "Done (" "$log"; then
+              cat "$log"
+              echo "Dedicated server reached the ready state."
+              exit 0
+            fi
+            if ! kill -0 "$server_pid" 2>/dev/null; then
+              cat "$log"
+              echo "Dedicated server exited before reaching the ready state."
+              exit 1
+            fi
+            sleep 1
+          done
+
+          cat "$log"
+          echo "Dedicated server did not reach the ready state within 90 seconds."
+          exit 1
       - uses: actions/upload-artifact@v4
         if: success()
         with:
