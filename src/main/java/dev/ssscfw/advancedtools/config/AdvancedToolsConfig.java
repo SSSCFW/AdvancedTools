@@ -12,6 +12,7 @@ public final class AdvancedToolsConfig {
 
     public static final ModConfigSpec.IntValue DESTROY_RANGE_LEVEL;
     public static final ModConfigSpec.IntValue SAFETY_COUNTER;
+    public static final ModConfigSpec.IntValue CONNECTED_MINING_LIMIT;
     public static final ModConfigSpec.BooleanValue SPAWN_HIGH_GRADE_MOBS;
     public static final ModConfigSpec.BooleanValue DROP_GATHER;
     public static final ModConfigSpec.IntValue DIG_UNDER;
@@ -35,8 +36,15 @@ public final class AdvancedToolsConfig {
                 .comment("Initial upgraded-tool range level. 0 means one block; 1 means 3x3. The value is clamped to the tool's maximum range.")
                 .defineInRange("destroyRangeLevel", 1, 0, 9);
         SAFETY_COUNTER = builder
-                .comment("Legacy compatibility setting. Connected-block search is now bounded by selected range.")
+                .comment("Legacy compatibility setting. Kept for existing configs; extended connected mining uses connectedMiningLimit instead.")
                 .defineInRange("safetyCounter", 100, 1, 100000);
+        CONNECTED_MINING_LIMIT = builder
+                .comment(
+                        "Horizontal side length used as the safety boundary for extended connected mining.",
+                        "When an upgraded axe or pickaxe is set to 3x3 or larger and starts on a configured chain block,",
+                        "connected matching blocks are followed outside the selected mining range, but only inside this X/Z footprint.",
+                        "The number of blocks destroyed by one connected operation is also capped at this value squared.")
+                .defineInRange("connectedMiningLimit", 64, 1, 512);
         SPAWN_HIGH_GRADE_MOBS = builder
                 .comment("Master switch for natural spawning of AdvancedTools high-grade mobs.")
                 .define("spawnHighGradeMobs", true);
@@ -51,8 +59,10 @@ public final class AdvancedToolsConfig {
                 .comment("Exact block registry IDs that use connected destruction for upgraded pickaxes.")
                 .defineList("pickaxeChainBlocks", List.of(
                         "minecraft:diamond_ore", "minecraft:deepslate_diamond_ore",
-                        "minecraft:gold_ore", "minecraft:deepslate_gold_ore",
+                        "minecraft:emerald_ore", "minecraft:deepslate_emerald_ore",
+                        "minecraft:gold_ore", "minecraft:deepslate_gold_ore", "minecraft:nether_gold_ore",
                         "minecraft:iron_ore", "minecraft:deepslate_iron_ore",
+                        "minecraft:copper_ore", "minecraft:deepslate_copper_ore",
                         "minecraft:coal_ore", "minecraft:deepslate_coal_ore",
                         "minecraft:lapis_ore", "minecraft:deepslate_lapis_ore",
                         "minecraft:redstone_ore", "minecraft:deepslate_redstone_ore",
@@ -66,7 +76,8 @@ public final class AdvancedToolsConfig {
                 .comment("Exact block registry IDs that use connected destruction for upgraded axes.")
                 .defineList("axeChainBlocks", List.of(
                         "minecraft:oak_log", "minecraft:spruce_log", "minecraft:birch_log", "minecraft:jungle_log",
-                        "minecraft:acacia_log", "minecraft:dark_oak_log", "minecraft:mangrove_log", "minecraft:cherry_log"),
+                        "minecraft:acacia_log", "minecraft:dark_oak_log", "minecraft:mangrove_log", "minecraft:cherry_log",
+                        "minecraft:crimson_stem", "minecraft:warped_stem"),
                         () -> "minecraft:oak_log", AdvancedToolsConfig::isString);
         builder.pop();
 
@@ -93,6 +104,7 @@ public final class AdvancedToolsConfig {
     }
 
     public static int digUnder() { return safeGet(DIG_UNDER); }
+    public static int connectedMiningLimit() { return safeGet(CONNECTED_MINING_LIMIT); }
     public static boolean dropGather() { return safeGet(DROP_GATHER); }
     public static boolean highGradeMobsEnabled() { return safeGet(SPAWN_HIGH_GRADE_MOBS); }
     public static boolean fireZombieEnabled() { return highGradeMobsEnabled() && safeGet(SPAWN_FIRE_ZOMBIE); }
