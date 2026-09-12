@@ -1,0 +1,1 @@
+{"type":"minecraft:crafting_shaped","category":"misc","pattern":["RXR","XZX","RXR"],"key":{"R":{"item":"minecraft:redstone"},"X":{"item":"minecraft:gold_ingot"},"Z":{"item":"minecraft:diamond"}},"result":{"id":"advancedtools:blueenhancer","count":2}}

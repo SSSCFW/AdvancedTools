@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "L R",
+    "L R",
+    " D "
+  ],
+  "key": {
+    "D": { "item": "minecraft:diamond_block" },
+    "R": { "item": "minecraft:redstone_block" },
+    "L": { "item": "minecraft:lapis_block" }
+  },
+  "result": {
+    "id": "advancedtools:magnet",
+    "count": 1
+  }
+}

@@ -1,0 +1,1 @@
+{"type":"minecraft:crafting_shaped","category":"equipment","pattern":["XXX"," # "," Z "],"key":{"X":{"tag":"minecraft:logs"},"#":{"item":"minecraft:stick"},"Z":{"item":"minecraft:stick"}},"result":{"id":"advancedtools:ugwoodpickaxe"}}

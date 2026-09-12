@@ -1,6 +1,6 @@
 {
-    "parent": "item/handheld",
+    "parent": "minecraft:item/handheld",
     "textures": {
-        "layer0": "advancedtools:items/n_e_g_i"
+        "layer0": "advancedtools:item/n_e_g_i"
     }
 }

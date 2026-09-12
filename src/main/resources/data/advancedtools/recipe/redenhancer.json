@@ -1,0 +1,1 @@
+{"type":"minecraft:crafting_shaped","category":"misc","pattern":[" X ","XZX"," X "],"key":{"X":{"item":"minecraft:gold_nugget"},"Z":{"item":"minecraft:redstone"}},"result":{"id":"advancedtools:redenhancer","count":2}}

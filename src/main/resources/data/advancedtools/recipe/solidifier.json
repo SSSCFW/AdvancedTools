@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "NWN",
+    "LBL",
+    "NWN"
+  ],
+  "key": {
+    "N": { "item": "minecraft:netherite_ingot" },
+    "L": { "item": "minecraft:lava_bucket" },
+    "W": { "item": "minecraft:water_bucket" },
+    "B": { "item": "advancedtools:blueenhancer" }
+  },
+  "result": {
+    "id": "advancedtools:solidifier",
+    "count": 1
+  }
+}

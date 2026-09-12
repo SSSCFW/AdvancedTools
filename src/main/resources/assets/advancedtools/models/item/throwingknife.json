@@ -1,6 +1,6 @@
 {
-    "parent": "item/handheld",
+    "parent": "minecraft:item/handheld",
     "textures": {
-        "layer0": "advancedtools:items/throwing_knife"
+        "layer0": "advancedtools:item/throwing_knife"
     }
 }
