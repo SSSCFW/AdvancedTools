@@ -7,9 +7,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.Level;
 
-public final class BlazeBladeItem extends ChargedSpecialSwordItem {
+public final class BlazeBladeItem extends HeatManagedSpecialSwordItem {
     public BlazeBladeItem() {
-        super(Tiers.DIAMOND, 1200, 4, "Fire Ball", 0);
+        super(Tiers.DIAMOND, 1200, 4, "Fire Ball");
     }
 
     @Override
