@@ -35,5 +35,12 @@
   "item.advancedtools.infiniteaxe": "InfinityAxe",
   "item.advancedtools.infiniteshovel": "InfinityShovel",
   "item.advancedtools.infinitehoe": "Infinity Hoe",
-  "item.advancedtools.genocideblade": "Genocide Blade"
+  "item.advancedtools.genocideblade": "Genocide Blade",
+  "entity.advancedtools.highskeleton": "High Skeleton",
+  "entity.advancedtools.skeletonsniper": "Skeleton Sniper",
+  "entity.advancedtools.zombiewarrior": "Zombie Warrior",
+  "entity.advancedtools.firezombie": "Fire Zombie",
+  "entity.advancedtools.highspeedcreeper": "High Speed Creeper",
+  "entity.advancedtools.goldcreeper": "Gold Creeper",
+  "entity.advancedtools.throwingknife": "Throwing Knife"
 }
