@@ -14,6 +14,7 @@ import dev.ssscfw.advancedtools.item.MagnetItem;
 import dev.ssscfw.advancedtools.item.NegiItem;
 import dev.ssscfw.advancedtools.item.PlanetGuardianItem;
 import dev.ssscfw.advancedtools.item.SmashBatItem;
+import dev.ssscfw.advancedtools.item.SolidifierItem;
 import dev.ssscfw.advancedtools.item.SpecialSwordItem;
 import dev.ssscfw.advancedtools.item.StormBringerItem;
 import dev.ssscfw.advancedtools.item.ThrowingKnifeItem;
@@ -36,6 +37,7 @@ public final class ModItems {
     public static final DeferredItem<EnhancerItem> RED_ENHANCER = ITEMS.register("redenhancer", () -> new EnhancerItem(Rarity.UNCOMMON));
     public static final DeferredItem<EnhancerItem> BLUE_ENHANCER = ITEMS.register("blueenhancer", () -> new EnhancerItem(Rarity.RARE));
     public static final DeferredItem<MagnetItem> MAGNET = ITEMS.register("magnet", MagnetItem::new);
+    public static final DeferredItem<SolidifierItem> SOLIDIFIER = ITEMS.register("solidifier", SolidifierItem::new);
 
     public static final DeferredItem<UpgradedShovelItem> UG_WOOD_SHOVEL = shovel("ugwoodshovel", Tiers.WOOD, 1.0F, false);
     public static final DeferredItem<UpgradedShovelItem> UG_STONE_SHOVEL = shovel("ugstoneshovel", Tiers.STONE, 1.5F, false);
