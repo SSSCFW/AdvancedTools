@@ -1,0 +1,1 @@
+{"type":"minecraft:crafting_shaped","category":"equipment","pattern":[" P#","XEP","IX "],"key":{"I":{"item":"minecraft:stick"},"X":{"item":"minecraft:iron_ingot"},"#":{"item":"minecraft:water_bucket"},"E":{"item":"advancedtools:blueenhancer"},"P":{"item":"minecraft:snow_block"}},"result":{"id":"advancedtools:icehold"}}
