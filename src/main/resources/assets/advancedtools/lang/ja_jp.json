@@ -1,0 +1,10 @@
+{
+  "item.advancedtools.magnet": "磁石",
+  "tooltip.advancedtools.magnet.range": "回収範囲: %sx%s",
+  "tooltip.advancedtools.magnet.enabled": "磁石: 有効",
+  "tooltip.advancedtools.magnet.disabled": "磁石: 無効",
+  "tooltip.advancedtools.magnet.toggle": "手に持ってFキーで有効/無効を切り替え",
+  "message.advancedtools.magnet.range": "磁石の回収範囲: %sx%s",
+  "message.advancedtools.magnet.enabled": "磁石を有効にしました",
+  "message.advancedtools.magnet.disabled": "磁石を無効にしました"
+}
