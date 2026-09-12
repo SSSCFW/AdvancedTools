@@ -12,6 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -105,41 +106,49 @@ final class AreaMiningSupport {
 
         Direction side = getFace(stack);
         boolean chain = isChainTarget(stack, originState, kind);
-        int minX = origin.getX() - range;
-        int minY = origin.getY() - range;
-        int minZ = origin.getZ() - range;
-        int maxX = origin.getX() + range;
-        int maxY = origin.getY() + range;
-        int maxZ = origin.getZ() + range;
+        boolean extendedChain = chain && range >= 1 && (kind == Kind.AXE || kind == Kind.PICKAXE);
 
-        if (!chain) {
-            if (side.getAxis() == Direction.Axis.Y) {
-                minY = origin.getY();
-                maxY = origin.getY();
-            } else {
-                int shift = range - AdvancedToolsConfig.digUnder();
-                minY += shift;
-                maxY += shift;
+        List<BlockPos> connected;
+        if (extendedChain) {
+            connected = collectExtendedConnected(level, originState, origin, kind,
+                    AdvancedToolsConfig.connectedMiningLimit());
+        } else {
+            int minX = origin.getX() - range;
+            int minY = origin.getY() - range;
+            int minZ = origin.getZ() - range;
+            int maxX = origin.getX() + range;
+            int maxY = origin.getY() + range;
+            int maxZ = origin.getZ() + range;
+
+            if (!chain) {
+                if (side.getAxis() == Direction.Axis.Y) {
+                    minY = origin.getY();
+                    maxY = origin.getY();
+                } else {
+                    int shift = range - AdvancedToolsConfig.digUnder();
+                    minY += shift;
+                    maxY += shift;
+                }
+                if (side.getAxis() == Direction.Axis.Z) {
+                    minZ = origin.getZ();
+                    maxZ = origin.getZ();
+                } else if (side.getAxis() == Direction.Axis.X) {
+                    minX = origin.getX();
+                    maxX = origin.getX();
+                }
             }
-            if (side.getAxis() == Direction.Axis.Z) {
-                minZ = origin.getZ();
-                maxZ = origin.getZ();
-            } else if (side.getAxis() == Direction.Axis.X) {
-                minX = origin.getX();
-                maxX = origin.getX();
+
+            Set<BlockPos> candidates = new HashSet<>();
+            for (BlockPos cursor : BlockPos.betweenClosed(minX, minY, minZ, maxX, maxY, maxZ)) {
+                BlockState state = level.getBlockState(cursor);
+                if (isSimilar(originState, state, kind)) {
+                    candidates.add(cursor.immutable());
+                }
             }
+            candidates.remove(origin);
+            connected = collectConnected(origin, candidates, kind == Kind.AXE ? 3.0D : 1.0D);
         }
 
-        Set<BlockPos> candidates = new HashSet<>();
-        for (BlockPos cursor : BlockPos.betweenClosed(minX, minY, minZ, maxX, maxY, maxZ)) {
-            BlockState state = level.getBlockState(cursor);
-            if (isSimilar(originState, state, kind)) {
-                candidates.add(cursor.immutable());
-            }
-        }
-        candidates.remove(origin);
-
-        List<BlockPos> connected = collectConnected(origin, candidates, kind == Kind.AXE ? 3.0D : 1.0D);
         if (connected.isEmpty()) {
             return;
         }
@@ -159,6 +168,69 @@ final class AreaMiningSupport {
         } finally {
             AREA_BREAK.set(false);
         }
+    }
+
+    private static List<BlockPos> collectExtendedConnected(Level level, BlockState originState, BlockPos origin,
+                                                            Kind kind, int configuredLimit) {
+        int limit = Math.max(1, configuredLimit);
+        int half = limit / 2;
+        int minX = origin.getX() - half;
+        int minZ = origin.getZ() - half;
+        int maxX = minX + limit - 1;
+        int maxZ = minZ + limit - 1;
+        int maxBlocks = limit * limit;
+
+        List<BlockPos> result = new ArrayList<>();
+        ArrayDeque<BlockPos> queue = new ArrayDeque<>();
+        Set<BlockPos> visited = new HashSet<>();
+        queue.add(origin);
+        visited.add(origin);
+
+        while (!queue.isEmpty() && result.size() < maxBlocks) {
+            BlockPos current = queue.removeFirst();
+
+            for (int dx = -1; dx <= 1; dx++) {
+                for (int dy = -1; dy <= 1; dy++) {
+                    for (int dz = -1; dz <= 1; dz++) {
+                        if (dx == 0 && dy == 0 && dz == 0) {
+                            continue;
+                        }
+                        if (kind == Kind.PICKAXE && Math.abs(dx) + Math.abs(dy) + Math.abs(dz) != 1) {
+                            continue;
+                        }
+
+                        BlockPos next = current.offset(dx, dy, dz);
+                        if (next.getX() < minX || next.getX() > maxX || next.getZ() < minZ || next.getZ() > maxZ) {
+                            continue;
+                        }
+                        if (next.getY() < level.getMinBuildHeight() || next.getY() >= level.getMaxBuildHeight()) {
+                            continue;
+                        }
+                        if (!visited.add(next)) {
+                            continue;
+                        }
+                        if (!level.hasChunkAt(next)) {
+                            continue;
+                        }
+
+                        BlockState nextState = level.getBlockState(next);
+                        if (!isSimilar(originState, nextState, kind)) {
+                            continue;
+                        }
+
+                        queue.addLast(next);
+                        if (!next.equals(origin)) {
+                            result.add(next.immutable());
+                            if (result.size() >= maxBlocks) {
+                                return result;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return result;
     }
 
     private static void destroyAndGather(ServerPlayer player, BlockPos target) {
@@ -186,7 +258,6 @@ final class AreaMiningSupport {
                 }
             }
         }
-        // Legacy AdvancedTools always emitted XP for area-mined blocks at the breaker's position.
         for (ExperienceOrb orb : level.getEntitiesOfClass(ExperienceOrb.class, searchBox)) {
             if (!existingEntities.contains(orb.getId())) {
                 orb.setPos(x, y, z);
@@ -218,10 +289,11 @@ final class AreaMiningSupport {
         if (check.isAir()) {
             return false;
         }
-        if (origin.is(BlockTags.REDSTONE_ORES)) {
-            // 1.12 used one block ID with a lit metadata/state variant. Keep the same block family together,
-            // but don't merge stone and deepslate ore variants.
-            return origin.getBlock() == check.getBlock();
+        if (kind == Kind.PICKAXE
+                && AdvancedToolsConfig.isPickaxeChainBlock(origin)
+                && AdvancedToolsConfig.isPickaxeChainBlock(check)
+                && oreFamily(origin).equals(oreFamily(check))) {
+            return true;
         }
         if (isLegacyDirt(origin)) {
             return isLegacyDirt(check);
@@ -229,8 +301,12 @@ final class AreaMiningSupport {
         if (origin.getBlock() != check.getBlock()) {
             return false;
         }
-        // Legacy axes explicitly ignored metadata (log axis/species state); pickaxes and shovels did not.
         return kind == Kind.AXE || origin.equals(check);
+    }
+
+    private static String oreFamily(BlockState state) {
+        String path = BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath();
+        return path.startsWith("deepslate_") ? path.substring("deepslate_".length()) : path;
     }
 
     private static boolean isLegacyDirt(BlockState state) {
