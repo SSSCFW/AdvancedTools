@@ -6,5 +6,13 @@
   "tooltip.advancedtools.magnet.toggle": "手に持ってFキーで有効/無効を切り替え",
   "message.advancedtools.magnet.range": "磁石の回収範囲: %sx%s",
   "message.advancedtools.magnet.enabled": "磁石を有効にしました",
-  "message.advancedtools.magnet.disabled": "磁石を無効にしました"
+  "message.advancedtools.magnet.disabled": "磁石を無効にしました",
+  "item.advancedtools.solidifier": "固体化装置",
+  "tooltip.advancedtools.solidifier.range": "固体化範囲: %sx%s",
+  "tooltip.advancedtools.solidifier.enabled": "固体化装置: 有効",
+  "tooltip.advancedtools.solidifier.disabled": "固体化装置: 無効",
+  "tooltip.advancedtools.solidifier.toggle": "手に持ってFキーで有効/無効を切り替え",
+  "message.advancedtools.solidifier.range": "固体化装置の範囲: %sx%s",
+  "message.advancedtools.solidifier.enabled": "固体化装置を有効にしました",
+  "message.advancedtools.solidifier.disabled": "固体化装置を無効にしました"
 }
