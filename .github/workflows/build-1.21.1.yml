@@ -1,9 +1,7 @@
 name: Build 1.21.1 NeoForge
 
 on:
-  push:
-    branches: [ "port/1.21.1-neoforge" ]
-  pull_request:
+  workflow_dispatch:
 
 jobs:
   build:

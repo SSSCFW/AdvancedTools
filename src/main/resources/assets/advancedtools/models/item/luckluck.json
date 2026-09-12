@@ -1,6 +1,6 @@
 {
-    "parent": "item/handheld",
+    "parent": "minecraft:item/handheld",
     "textures": {
-        "layer0": "advancedtools:items/luck_luck"
+        "layer0": "advancedtools:item/luck_luck"
     }
 }

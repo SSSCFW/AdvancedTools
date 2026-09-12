@@ -1,6 +1,6 @@
 {
-    "parent": "item/handheld",
+    "parent": "minecraft:item/handheld",
     "textures": {
-        "layer0": "advancedtools:items/asmo_slasher"
+        "layer0": "advancedtools:item/asmo_slasher"
     }
 }

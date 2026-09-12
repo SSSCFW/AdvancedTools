@@ -1,6 +1,6 @@
 {
-    "parent": "item/handheld",
+    "parent": "minecraft:item/handheld",
     "textures": {
-        "layer0": "advancedtools:items/smash_bat"
+        "layer0": "advancedtools:item/smash_bat"
     }
 }

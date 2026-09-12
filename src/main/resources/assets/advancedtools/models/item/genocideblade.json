@@ -1,6 +1,6 @@
 {
-    "parent": "item/handheld",
+    "parent": "minecraft:item/handheld",
     "textures": {
-        "layer0": "advancedtools:items/genocide_blade"
+        "layer0": "advancedtools:item/genocide_blade"
     }
 }

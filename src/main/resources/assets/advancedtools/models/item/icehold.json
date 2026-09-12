@@ -1,6 +1,6 @@
 {
-    "parent": "item/handheld",
+    "parent": "minecraft:item/handheld",
     "textures": {
-        "layer0": "advancedtools:items/ice_hold"
+        "layer0": "advancedtools:item/ice_hold"
     }
 }
