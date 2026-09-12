@@ -2,6 +2,7 @@ package dev.ssscfw.advancedtools.item;
 
 import java.util.List;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -15,7 +16,6 @@ import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.BlockPos;
 
 public class UpgradedPickaxeItem extends PickaxeItem implements AreaMiningItem {
     private final int maxRange;
@@ -41,6 +41,13 @@ public class UpgradedPickaxeItem extends PickaxeItem implements AreaMiningItem {
         boolean result = infinite || super.mineBlock(stack, level, state, pos, miner);
         AreaMiningSupport.mineArea(stack, level, state, pos, miner, maxRange, AreaMiningSupport.Kind.PICKAXE);
         return result;
+    }
+
+    @Override
+    public void postHurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        if (!infinite) {
+            super.postHurtEnemy(stack, target, attacker);
+        }
     }
 
     @Override
