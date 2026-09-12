@@ -77,7 +77,7 @@ public final class ModItems {
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ADVANCED_TOOLS_TAB = CREATIVE_TABS.register("advancedtools", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.advancedtools"))
-            .withTabsBefore(CreativeModeTabs.COMBAT)
+            .withTabsAfter(CreativeModeTabs.SPAWN_EGGS)
             .icon(() -> BLUE_ENHANCER.get().getDefaultInstance())
             .displayItems((parameters, output) -> ITEMS.getEntries().forEach(entry -> output.accept(entry.get())))
             .build());
