@@ -22,6 +22,11 @@ public class InfiniteHoeItem extends HoeItem {
     }
 
     @Override
+    public void postHurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        // Legacy item used setMaxDamage(0): it is fully unbreakable, including when used as a weapon.
+    }
+
+    @Override
     public InteractionResult useOn(UseOnContext context) {
         ItemStack stack = context.getItemInHand();
         int damage = stack.getDamageValue();
